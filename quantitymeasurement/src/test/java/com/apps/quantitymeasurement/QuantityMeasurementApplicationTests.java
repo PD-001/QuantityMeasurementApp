@@ -229,9 +229,20 @@ class QuantityMeasurementApplicationTests {
     	Length length1= new Length(1.0, Length.LengthUnit.FEET);
     	Length length2= new Length(12.0, Length.LengthUnit.INCHES);
     	
-    	ArrayList<Length> sumLength= QuantityMeasurementApplication.demonstrateLengthAddition(length1, length2, Length.LengthUnit.CENTIMETERS);
+    	Length sumLength= QuantityMeasurementApplication.demonstrateLengthAddition(length1, length2);
     	Length expectedLength = new Length(2.0, Length. LengthUnit.FEET);
     	
-    	assertTrue(QuantityMeasurementApplication.demonstrateLengthEquality(sumLength.get(0), expectedLength));
+    	assertTrue(QuantityMeasurementApplication.demonstrateLengthEquality(sumLength, expectedLength));
+    }
+    
+    @Test
+    public void addFeetAndInchesWithTargetUnitInches(){
+    	Length length1= new Length(1.0, Length.LengthUnit.FEET);
+    	Length length2= new Length(12.0, Length.LengthUnit.INCHES);
+    	
+    	Length sumLength= QuantityMeasurementApplication.demonstrateLengthAddition(length1, length2, LengthUnit.CENTIMETERS);
+    	Length expectedLength= new Length(60.95996708161777, Length. LengthUnit.CENTIMETERS);
+    	
+    	assertTrue(QuantityMeasurementApplication.demonstrateLengthEquality(sumLength, expectedLength));
     }
 }

@@ -1,8 +1,5 @@
 package com.apps.quantitymeasurement;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.apps.quantitymeasurement.Length.LengthUnit;
 
 public class QuantityMeasurementApplication {
@@ -42,20 +39,25 @@ public class QuantityMeasurementApplication {
 		return newLength;
 	}
 	
-	public static ArrayList<Length> demonstrateLengthAddition(Length l1, Length l2, Length.LengthUnit targetUnit) {
+	public static Length demonstrateLengthAddition(Length l1, Length l2) {
 		
 		Length r1= l1.add(l2);
 		
 		System.out.println("Result in unit of the first length:\n" + r1);
-		
-		Length r2= Length.add(l1, l2, targetUnit);
-		
-		System.out.println("Result in target unit:\n" + r2);
-		
-		return new ArrayList<Length>(Arrays.asList(r1,r2));
+		return r1;
 		
 	}
 
+	public static Length demonstrateLengthAddition(Length l1, Length l2, Length.LengthUnit targetUnit) {
+		
+		Length r1= Length.add(l1, l2, targetUnit);
+		
+		System.out.println("Result in target unit:\n" + r1);
+		
+		return r1;
+		
+	}
+	
 	public static void main(String[] args) {
 
 		demonstrateLengthComparison(1.0, Length.LengthUnit.FEET, 12.0, Length.LengthUnit.INCHES);
@@ -72,6 +74,8 @@ public class QuantityMeasurementApplication {
 		
 		demonstrateLengthConversion(new Length(10, Length.LengthUnit.FEET), Length.LengthUnit.INCHES);
 		
+		demonstrateLengthAddition(new Length(10, Length.LengthUnit.FEET), new Length(20, Length.LengthUnit.INCHES));
+
 		demonstrateLengthAddition(new Length(10, Length.LengthUnit.FEET), new Length(20, Length.LengthUnit.INCHES), LengthUnit.CENTIMETERS);
 
 	}
