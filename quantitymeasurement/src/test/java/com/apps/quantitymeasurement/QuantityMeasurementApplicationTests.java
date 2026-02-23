@@ -7,6 +7,52 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class QuantityMeasurementApplicationTests {
 
+	@Test
+	public void testKilogramToGramConversion() {
+		
+		double result= Weight.convert(2.0, WeightUnit.KILOGRAM, WeightUnit.GRAM);
+		
+		assertEquals(2000.0, result, 0.0001);
+	}
+
+	@Test
+	public void testGramToKilogramConversion() {
+		
+		double result= Weight.convert(500.0, WeightUnit.GRAM, WeightUnit.KILOGRAM);
+		
+		assertEquals(0.5, result, 0.0001);
+	}
+
+	@Test
+	public void testPoundToKilogramConversion() {
+		
+		double result= Weight.convert(1.0, WeightUnit.POUND, WeightUnit.KILOGRAM);
+		
+		assertEquals(0.453592, result, 0.0001);
+	}
+	
+	@Test
+	public void additionOfWeightsEqualsExpected() {
+		
+		Weight w1= new Weight(1.0, WeightUnit.KILOGRAM);
+		Weight w2= new Weight(500.0, WeightUnit.GRAM);
+		
+		Weight result= w1.add(w2);
+		
+		assertEquals(new Weight(1.5, WeightUnit.KILOGRAM), result);
+	}
+	
+	@Test
+	public void addPoundToKilogram() {
+		
+		Weight w1= new Weight(1.0, WeightUnit.KILOGRAM);
+		Weight w2= new Weight(1.0, WeightUnit.POUND);
+		
+		Weight result= Weight.add(w1, w2, WeightUnit.KILOGRAM);
+		
+		assertEquals(1.453592, result.getValue(), 0.0001);
+	}
+	
     @Test
     public void testConversion_FeetToInches() {
         assertEquals(12.0, Length.convert(1.0, LengthUnit.FEET, LengthUnit.INCHES));
