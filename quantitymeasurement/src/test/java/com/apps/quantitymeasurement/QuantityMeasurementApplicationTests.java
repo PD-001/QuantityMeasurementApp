@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+
 class QuantityMeasurementApplicationTests {
 
     @Test
@@ -122,21 +124,21 @@ class QuantityMeasurementApplicationTests {
     @Test
     public void testInstanceMethod_ConvertTo_FeetToInches() {
         Length feet= new Length(1.0, LengthUnit.FEET);
-        double inches= feet.convertTo(LengthUnit.INCHES);
-        assertEquals(12.0, inches);
+        Length inches= feet.convertTo(LengthUnit.INCHES);
+        assertEquals(12.0, inches.getValue());
     }
 
     @Test
     public void testInstanceMethod_ConvertTo_YardsToFeet() {
         Length yards= new Length(1.0, LengthUnit.YARDS);
-        double feet= yards.convertTo(LengthUnit.FEET);
-        assertEquals(3.0, feet);
+        Length feet= yards.convertTo(LengthUnit.FEET);
+        assertEquals(3.0, feet.getValue());
     }
 
     @Test
     public void testInstanceMethod_ConvertTo_ReturnsNewInstance() {
         Length original= new Length(1.0, LengthUnit.FEET);
-        double converted= original.convertTo(LengthUnit.INCHES);
+        Length converted= original.convertTo(LengthUnit.INCHES);
         assertNotSame(original.getValue(), converted);
     }
 
@@ -151,8 +153,8 @@ class QuantityMeasurementApplicationTests {
     @Test
     public void testDemonstrateLengthConversion_FromInstance() {
         Length yards= new Length(1.0, LengthUnit.YARDS);
-        double result= QuantityMeasurementApplication.demonstrateLengthConversion(yards, LengthUnit.INCHES);
-        assertEquals(36.0, result);
+        Length result= QuantityMeasurementApplication.demonstrateLengthConversion(yards, LengthUnit.INCHES);
+        assertEquals(36.0, result.getValue());
     }
 
 
@@ -220,5 +222,16 @@ class QuantityMeasurementApplicationTests {
         double value= 5.0;
         double expected= value*(LengthUnit.YARDS.getConversionFactor()/LengthUnit.FEET.getConversionFactor());
         assertEquals(expected, Length.convert(value, LengthUnit.YARDS, LengthUnit.FEET));
+    }
+    
+    @Test
+    public void addFeetAndInches(){
+    	Length length1= new Length(1.0, Length.LengthUnit.FEET);
+    	Length length2= new Length(12.0, Length.LengthUnit.INCHES);
+    	
+    	ArrayList<Length> sumLength= QuantityMeasurementApplication.demonstrateLengthAddition(length1, length2, Length.LengthUnit.CENTIMETERS);
+    	Length expectedLength = new Length(2.0, Length. LengthUnit.FEET);
+    	
+    	assertTrue(QuantityMeasurementApplication.demonstrateLengthEquality(sumLength.get(0), expectedLength));
     }
 }

@@ -60,10 +60,33 @@ public class Length {
 		
 	}
 	
-	public double convertTo(LengthUnit unit) {
+	public Length convertTo(LengthUnit unit) {
 		if(unit==null) throw new IllegalArgumentException("Unit cannot be null");
 		
-		return convert(this.value,this.unit, unit);
+		return new Length(convert(this.value,this.unit, unit), unit);
+	}
+	
+	public static Length add(Length l1, Length l2, LengthUnit targetUnit) {
+		
+		if(l1==null && l2==null) throw new IllegalArgumentException("Lengths cannot be null");
+		
+		if(targetUnit==null) throw new IllegalArgumentException("Unit cannot be null");
+		
+		if(!Double.isFinite(l1.value) || l1.value<0 || !Double.isFinite(l2.value) || l2.value<0) throw new IllegalArgumentException("Value must be finite and positive");
+			
+		Length convL1= l1.convertTo(targetUnit);
+		Length convL2= l2.convertTo(targetUnit);
+		
+		Length sumLength= new Length(convL1.value+convL2.value,targetUnit); 
+		
+		return sumLength;
+	}
+	
+	public Length add(Length thatLength) {
+		
+		Length newLength= add(this, thatLength, this.unit);
+		
+		return newLength;
 	}
 	
 	@Override
