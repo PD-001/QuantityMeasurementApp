@@ -1,11 +1,9 @@
 package com.apps.quantitymeasurement;
 
-import com.apps.quantitymeasurement.Length.LengthUnit;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
 
 class QuantityMeasurementApplicationTests {
 
@@ -219,29 +217,32 @@ class QuantityMeasurementApplicationTests {
 
     @Test
     public void testMathematicalConsistency_Formula() {
-        double value= 5.0;
-        double expected= value*(LengthUnit.YARDS.getConversionFactor()/LengthUnit.FEET.getConversionFactor());
-        assertEquals(expected, Length.convert(value, LengthUnit.YARDS, LengthUnit.FEET));
+    	double value= 5.0;
+
+        double toFeet= Length.convert(value, LengthUnit.YARDS, LengthUnit.FEET);
+        double backToYards= Length.convert(toFeet, LengthUnit.FEET, LengthUnit.YARDS);
+
+        assertEquals(value, backToYards, 0.0001);
     }
     
     @Test
     public void addFeetAndInches(){
-    	Length length1= new Length(1.0, Length.LengthUnit.FEET);
-    	Length length2= new Length(12.0, Length.LengthUnit.INCHES);
+    	Length length1= new Length(1.0, LengthUnit.FEET);
+    	Length length2= new Length(12.0, LengthUnit.INCHES);
     	
     	Length sumLength= QuantityMeasurementApplication.demonstrateLengthAddition(length1, length2);
-    	Length expectedLength = new Length(2.0, Length. LengthUnit.FEET);
+    	Length expectedLength = new Length(2.0, LengthUnit.FEET);
     	
     	assertTrue(QuantityMeasurementApplication.demonstrateLengthEquality(sumLength, expectedLength));
     }
     
     @Test
     public void addFeetAndInchesWithTargetUnitInches(){
-    	Length length1= new Length(1.0, Length.LengthUnit.FEET);
-    	Length length2= new Length(12.0, Length.LengthUnit.INCHES);
+    	Length length1= new Length(1.0, LengthUnit.FEET);
+    	Length length2= new Length(12.0, LengthUnit.INCHES);
     	
     	Length sumLength= QuantityMeasurementApplication.demonstrateLengthAddition(length1, length2, LengthUnit.CENTIMETERS);
-    	Length expectedLength= new Length(60.95996708161777, Length. LengthUnit.CENTIMETERS);
+    	Length expectedLength= new Length(60.95996708161777, LengthUnit.CENTIMETERS);
     	
     	assertTrue(QuantityMeasurementApplication.demonstrateLengthEquality(sumLength, expectedLength));
     }

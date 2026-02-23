@@ -6,24 +6,6 @@ public class Length {
 	private final LengthUnit unit;
 	private static final double Epsilon= 0.0001d;
 	
-	public enum LengthUnit{
-		FEET(12.0),
-		INCHES(1.0),
-		YARDS(36.0),
-		CENTIMETERS(0.393701);
-		
-		private final double conversionFactor;
-		
-		LengthUnit(double conversionFactor){
-			this.conversionFactor= conversionFactor;
-		}
-		
-		public double getConversionFactor() {
-			return conversionFactor;
-		}
-		
-	}
-	
 	public Length(double value, LengthUnit unit) {
 		if(value<0) {
 			throw new IllegalArgumentException("Length cannot be negative");
@@ -36,14 +18,14 @@ public class Length {
 		this.unit= unit;
 	}
 	
-	public double convertToBaseUnit() {
-		return this.value*this.unit.conversionFactor;
+	public double toBaseUnit() {
+		return unit.convertToBaseUnit(value);
 	}
 	
 	public boolean compare(Length thatLength) {
 //		return Double.compare(this.convertToBaseUnit(), thatLength.convertToBaseUnit())==0;
 		
-		return Math.abs(this.convertToBaseUnit()-thatLength.convertToBaseUnit())< Epsilon;
+		return Math.abs(this.toBaseUnit()-thatLength.toBaseUnit())< Epsilon;
 	}
 	
 	public static double convert(double value, LengthUnit sourceUnit, LengthUnit targetUnit) {
@@ -52,9 +34,9 @@ public class Length {
 		
 		if(sourceUnit==null || targetUnit==null) throw new IllegalArgumentException("Unit cannot be null");
 		
-		double base= value*sourceUnit.getConversionFactor();
+		double base= sourceUnit.convertToBaseUnit(value);
 		
-		double converted= base/targetUnit.getConversionFactor();
+		double converted= targetUnit.convertFromBaseUnit(base);
 		
 		return converted;
 		
@@ -68,18 +50,16 @@ public class Length {
 	
 	public static Length add(Length l1, Length l2, LengthUnit targetUnit) {
 		
-		if(l1==null && l2==null) throw new IllegalArgumentException("Lengths cannot be null");
+		if(l1==null || l2==null) throw new IllegalArgumentException("Lengths cannot be null");
 		
 		if(targetUnit==null) throw new IllegalArgumentException("Unit cannot be null");
 		
 		if(!Double.isFinite(l1.value) || l1.value<0 || !Double.isFinite(l2.value) || l2.value<0) throw new IllegalArgumentException("Value must be finite and positive");
 			
-		Length convL1= l1.convertTo(targetUnit);
-		Length convL2= l2.convertTo(targetUnit);
-		
-		Length sumLength= new Length(convL1.value+convL2.value,targetUnit); 
-		
-		return sumLength;
+		double baseSum= l1.toBaseUnit()+l2.toBaseUnit();
+	    double converted= targetUnit.convertFromBaseUnit(baseSum);
+
+	    return new Length(converted, targetUnit);
 	}
 	
 	public Length add(Length thatLength) {
@@ -102,7 +82,7 @@ public class Length {
 	
 	@Override
 	public int hashCode() {
-		return Double.hashCode(this.convertToBaseUnit());
+		return Double.hashCode(this.toBaseUnit());
 	}
 	
 	@Override
