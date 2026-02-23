@@ -1,11 +1,10 @@
 package com.apps.quantitymeasurement;
 
-import java.util.Objects;
-
 public class Length {
 	
 	private final double value;
 	private final LengthUnit unit;
+	private static final double Epsilon= 0.0001d;
 	
 	public enum LengthUnit{
 		FEET(12.0),
@@ -19,7 +18,7 @@ public class Length {
 			this.conversionFactor= conversionFactor;
 		}
 		
-		public double getConversion() {
+		public double getConversionFactor() {
 			return conversionFactor;
 		}
 		
@@ -42,7 +41,29 @@ public class Length {
 	}
 	
 	public boolean compare(Length thatLength) {
-		return Double.compare(this.convertToBaseUnit(), thatLength.convertToBaseUnit())==0;
+//		return Double.compare(this.convertToBaseUnit(), thatLength.convertToBaseUnit())==0;
+		
+		return Math.abs(this.convertToBaseUnit()-thatLength.convertToBaseUnit())< Epsilon;
+	}
+	
+	public static double convert(double value, LengthUnit sourceUnit, LengthUnit targetUnit) {
+		
+		if(!Double.isFinite(value) || value<0) throw new IllegalArgumentException("Value must be finite and positive");
+		
+		if(sourceUnit==null || targetUnit==null) throw new IllegalArgumentException("Unit cannot be null");
+		
+		double base= value*sourceUnit.getConversionFactor();
+		
+		double converted= base/targetUnit.getConversionFactor();
+		
+		return converted;
+		
+	}
+	
+	public double convertTo(LengthUnit unit) {
+		if(unit==null) throw new IllegalArgumentException("Unit cannot be null");
+		
+		return convert(this.value,this.unit, unit);
 	}
 	
 	@Override
@@ -64,6 +85,15 @@ public class Length {
 	@Override
 	public String toString() {
 		return value+":"+unit;
+	}
+	
+	public LengthUnit getUnit() {
+		
+		return unit;
+	}
+	
+	public double getValue() {
+		return value;
 	}
 	
 	public static void main(String[] args) {

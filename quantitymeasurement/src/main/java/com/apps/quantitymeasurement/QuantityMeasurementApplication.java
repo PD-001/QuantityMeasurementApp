@@ -1,5 +1,6 @@
 package com.apps.quantitymeasurement;
 
+
 public class QuantityMeasurementApplication {
 
 	public static boolean demonstrateLengthEquality(Length length1, Length length2) {
@@ -17,6 +18,25 @@ public class QuantityMeasurementApplication {
 
 		return result;
 	}
+	
+	public static double demonstrateLengthConversion(Length l1, Length.LengthUnit unit) {
+		
+		double newLength=l1.convertTo(unit);
+		
+		System.out.println("Converted length of l1 from "+ l1.getUnit() +"to "+ unit +"is "+ newLength);
+		
+		return newLength;
+		
+	}
+	
+	public static double demonstrateLengthConversion(double value, Length.LengthUnit from, Length.LengthUnit to) {
+		
+		double newLength= Length.convert(value, from, to);
+		
+		System.out.println("Converted length of "+ value +" from "+ from +"to "+ to +"is "+ newLength);
+		
+		return newLength;
+	}
 
 	public static void main(String[] args) {
 
@@ -29,6 +49,10 @@ public class QuantityMeasurementApplication {
 		demonstrateLengthComparison(3.0, Length.LengthUnit.FEET, 1.0, Length.LengthUnit.YARDS);
 
 		demonstrateLengthComparison(30.48, Length.LengthUnit.CENTIMETERS, 1.0, Length.LengthUnit.FEET);
+		
+		demonstrateLengthConversion(10, Length.LengthUnit.FEET, Length.LengthUnit.INCHES);
+		
+		demonstrateLengthConversion(new Length(10, Length.LengthUnit.FEET), Length.LengthUnit.INCHES);
 
 	}
 
