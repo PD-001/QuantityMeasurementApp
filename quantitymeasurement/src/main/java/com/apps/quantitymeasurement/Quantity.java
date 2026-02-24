@@ -6,7 +6,7 @@ public class Quantity<U extends IMeasurable> {
 	private final double value;
 	private final U unit;
 
-	private static final double EPSILON= 0.0001;
+	private static final double epsilon= 0.0001;
 
 	public Quantity(double value, U unit) {
 
@@ -38,7 +38,7 @@ public class Quantity<U extends IMeasurable> {
 		double converted= targetUnit.convertFromBaseUnit(baseValue);
 
 		// Round to 2 decimal places
-		converted = Math.round(converted * 100.0) / 100.0;
+		converted= Math.round(converted*100.0)/100.0;
 
 		return new Quantity<>(converted, targetUnit);
 	}
@@ -46,14 +46,13 @@ public class Quantity<U extends IMeasurable> {
 
 	public Quantity<U> add(Quantity<U> other, U targetUnit) {
 
-		if (other == null)
-			throw new IllegalArgumentException("Other quantity cannot be null");
+		if (other==null) throw new IllegalArgumentException("Other quantity cannot be null");
 
-		double baseSum = this.toBaseUnit() + other.toBaseUnit();
+		double baseSum= this.toBaseUnit()+other.toBaseUnit();
 
-		double converted = targetUnit.convertFromBaseUnit(baseSum);
+		double converted= targetUnit.convertFromBaseUnit(baseSum);
 
-		converted = Math.round(converted * 100.0) / 100.0;
+		converted= Math.round(converted*100.0)/100.0;
 
 		return new Quantity<>(converted, targetUnit);
 	}
@@ -65,19 +64,15 @@ public class Quantity<U extends IMeasurable> {
 	@Override
 	public boolean equals(Object o) {
 
-		if (this == o)
-			return true;
+		if (this==o) return true;
 
-		if (o == null || getClass() != o.getClass())
-			return false;
+		if (o==null || getClass()!=o.getClass()) return false;
 
-		Quantity<?> that = (Quantity<?>) o;
+		Quantity<?> that= (Quantity<?>) o;
 
-		// Prevent cross-category comparison
-		if (this.unit.getClass() != that.unit.getClass())
-			return false;
+		if (this.unit.getClass()!=that.unit.getClass()) return false;
 
-		return Math.abs(this.toBaseUnit() - that.toBaseUnit()) < EPSILON;
+		return Math.abs(this.toBaseUnit()-that.toBaseUnit())<epsilon;
 	}
 
 	@Override
@@ -87,6 +82,6 @@ public class Quantity<U extends IMeasurable> {
 
 	@Override
 	public String toString() {
-		return value + " " + unit.getUnitName();
+		return value +":"+ unit.getUnitName();
 	}
 }
