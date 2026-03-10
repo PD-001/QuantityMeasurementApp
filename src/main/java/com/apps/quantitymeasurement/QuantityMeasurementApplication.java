@@ -79,5 +79,29 @@ public class QuantityMeasurementApplication {
 
 		demonstrateDivision(new Quantity<>(10.0, WeightUnit.KILOGRAM), new Quantity<>(5.0, WeightUnit.KILOGRAM));
 		demonstrateDivision(new Quantity<>(1.0, LengthUnit.FEET), new Quantity<>(6.0, LengthUnit.INCHES));
+
+		demonstrateComparison(100.0, TemperatureUnit.CELSIUS, 212.0, TemperatureUnit.FAHRENHEIT);
+		demonstrateComparison(0.0, TemperatureUnit.CELSIUS, 32.0, TemperatureUnit.FAHRENHEIT);
+
+		demonstrateConversion(new Quantity<>(100.0, TemperatureUnit.CELSIUS), TemperatureUnit.FAHRENHEIT);
+		demonstrateConversion(new Quantity<>(32.0, TemperatureUnit.FAHRENHEIT), TemperatureUnit.CELSIUS);
+
+		try {
+			demonstrateAddition(
+				new Quantity<>(100.0, TemperatureUnit.CELSIUS),
+				new Quantity<>(50.0, TemperatureUnit.CELSIUS)
+			);
+		} catch (UnsupportedOperationException e) {
+			System.out.println("Expected error for temperature addition: " + e.getMessage());
+		}
+
+		try {
+			demonstrateDivision(
+				new Quantity<>(100.0, TemperatureUnit.CELSIUS),
+				new Quantity<>(50.0, TemperatureUnit.CELSIUS)
+			);
+		} catch (UnsupportedOperationException e) {
+			System.out.println("Expected error for temperature division: " + e.getMessage());
+		}
 	}
 }

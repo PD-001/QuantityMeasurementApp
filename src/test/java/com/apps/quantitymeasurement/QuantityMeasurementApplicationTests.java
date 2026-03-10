@@ -720,4 +720,32 @@ class QuantityMeasurementAppTest {
 
 		assertEquals(2.0, result, 0.0001);
 	}
+	
+	@Test
+	void testTemperatureUnitComparison() {
+
+		Quantity<TemperatureUnit> celsius= new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+		Quantity<TemperatureUnit> fahrenheit= new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
+
+		assertTrue(celsius.equals(fahrenheit));
+	}
+
+	@Test
+	void testTemperatureUnitConversion() {
+
+		Quantity<TemperatureUnit> celsius= new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+
+		Quantity<TemperatureUnit> converted= celsius.convertTo(TemperatureUnit.FAHRENHEIT);
+
+		assertEquals(212.0, converted.getValue(), 0.0001);
+	}
+
+	@Test
+	void testTemperatureUnitUnsupportedAddition() {
+
+		Quantity<TemperatureUnit> celsius1= new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+		Quantity<TemperatureUnit> celsius2= new Quantity<>(50.0, TemperatureUnit.CELSIUS);
+
+		assertThrows(UnsupportedOperationException.class, () -> celsius1.add(celsius2));
+	}
 }

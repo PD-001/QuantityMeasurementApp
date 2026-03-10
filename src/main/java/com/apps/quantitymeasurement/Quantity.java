@@ -67,6 +67,8 @@ public class Quantity<U extends IMeasurable> {
 
 	private double performBaseArithmetic(Quantity<U> other, ArithmeticOperation operation) {
 
+		this.unit.validateOperationSupport(operation.name());
+
 		if (operation==ArithmeticOperation.DIVIDE && Math.abs(other.toBaseUnit())<epsilon)
 			throw new ArithmeticException("Division by zero is not allowed");
 
@@ -78,10 +80,14 @@ public class Quantity<U extends IMeasurable> {
 		if (targetUnit==null) throw new IllegalArgumentException("Target unit cannot be null");
 
 		double baseValue= this.toBaseUnit();
-		double converted= targetUnit.convertFromBaseUnit(baseValue);
+		double converted;
 
-		// Round to 2 decimal places
-		converted= Math.round(converted*100.0)/100.0;
+		if (this.unit instanceof TemperatureUnit) {
+			converted= targetUnit.convertFromBaseUnit(baseValue);
+		} else {
+			converted= targetUnit.convertFromBaseUnit(baseValue);
+			converted= Math.round(converted*100.0)/100.0;
+		}
 
 		return new Quantity<>(converted, targetUnit);
 	}
