@@ -1,11 +1,30 @@
 package com.apps.quantitymeasurement;
 
+import java.util.function.DoubleBinaryOperator;
+
 public class Quantity<U extends IMeasurable> {
 
 	private final double value;
 	private final U unit;
 
 	private static final double epsilon= 0.0001;
+
+	private enum ArithmeticOperation {
+
+		ADD((a, b) -> a+b),
+		SUBTRACT((a, b) -> a-b),
+		DIVIDE((a, b) -> a/b);
+
+		private final DoubleBinaryOperator operator;
+
+		ArithmeticOperation(DoubleBinaryOperator operator) {
+			this.operator= operator;
+		}
+
+		public double compute(double a, double b) {
+			return operator.applyAsDouble(a, b);
+		}
+	}
 
 	public Quantity(double value, U unit) {
 
@@ -29,6 +48,31 @@ public class Quantity<U extends IMeasurable> {
 		return unit.convertToBaseUnit(value);
 	}
 
+	private void validateArithmeticOperands(Quantity<U> other, U targetUnit, boolean targetUnitRequired) {
+
+		if (other==null) throw new IllegalArgumentException("Other quantity cannot be null");
+
+		if (other.unit==null) throw new IllegalArgumentException("Other quantity unit cannot be null");
+
+		if (this.unit.getClass()!=other.unit.getClass())
+			throw new IllegalArgumentException("Cannot perform arithmetic on quantities of different types");
+
+		if (!Double.isFinite(this.value)) throw new IllegalArgumentException("This quantity value must be finite");
+
+		if (!Double.isFinite(other.value)) throw new IllegalArgumentException("Other quantity value must be finite");
+
+		if (targetUnitRequired && targetUnit==null)
+			throw new IllegalArgumentException("Target unit cannot be null");
+	}
+
+	private double performBaseArithmetic(Quantity<U> other, ArithmeticOperation operation) {
+
+		if (operation==ArithmeticOperation.DIVIDE && Math.abs(other.toBaseUnit())<epsilon)
+			throw new ArithmeticException("Division by zero is not allowed");
+
+		return operation.compute(this.toBaseUnit(), other.toBaseUnit());
+	}
+
 	public Quantity<U> convertTo(U targetUnit) {
 
 		if (targetUnit==null) throw new IllegalArgumentException("Target unit cannot be null");
@@ -44,13 +88,11 @@ public class Quantity<U extends IMeasurable> {
 
 	public Quantity<U> add(Quantity<U> other, U targetUnit) {
 
-		if (other==null) throw new IllegalArgumentException("Other quantity cannot be null");
+		validateArithmeticOperands(other, targetUnit, true);
 
-		double baseSum= this.toBaseUnit()+other.toBaseUnit();
+		double baseResult= performBaseArithmetic(other, ArithmeticOperation.ADD);
 
-		double converted= targetUnit.convertFromBaseUnit(baseSum);
-
-		converted= Math.round(converted*100.0)/100.0;
+		double converted= Math.round(targetUnit.convertFromBaseUnit(baseResult)*100.0)/100.0;
 
 		return new Quantity<>(converted, targetUnit);
 	}
@@ -61,18 +103,11 @@ public class Quantity<U extends IMeasurable> {
 
 	public Quantity<U> subtract(Quantity<U> other, U targetUnit) {
 
-		if (other==null) throw new IllegalArgumentException("Other quantity cannot be null");
+		validateArithmeticOperands(other, targetUnit, true);
 
-		if (targetUnit==null) throw new IllegalArgumentException("Target unit cannot be null");
+		double baseResult= performBaseArithmetic(other, ArithmeticOperation.SUBTRACT);
 
-		if (this.unit.getClass()!=other.unit.getClass())
-			throw new IllegalArgumentException("Cannot subtract quantities of different types");
-
-		double baseDifference= this.toBaseUnit()-other.toBaseUnit();
-
-		double converted= targetUnit.convertFromBaseUnit(baseDifference);
-
-		converted= Math.round(converted*100.0)/100.0;
+		double converted= Math.round(targetUnit.convertFromBaseUnit(baseResult)*100.0)/100.0;
 
 		return new Quantity<>(converted, targetUnit);
 	}
@@ -83,17 +118,9 @@ public class Quantity<U extends IMeasurable> {
 
 	public double divide(Quantity<U> other) {
 
-		if (other==null) throw new IllegalArgumentException("Other quantity cannot be null");
+		validateArithmeticOperands(other, null, false);
 
-		if (this.unit.getClass()!=other.unit.getClass())
-			throw new IllegalArgumentException("Cannot divide quantities of different types");
-
-		double otherBase= other.toBaseUnit();
-
-		if (Math.abs(otherBase)<epsilon)
-			throw new ArithmeticException("Division by zero is not allowed");
-
-		return this.toBaseUnit()/otherBase;
+		return performBaseArithmetic(other, ArithmeticOperation.DIVIDE);
 	}
 
 	@Override

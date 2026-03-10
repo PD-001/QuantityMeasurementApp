@@ -609,4 +609,115 @@ class QuantityMeasurementAppTest {
 
 		assertEquals(2.0, result, 0.0001);
 	}
+	
+	@Test
+	void testSubtractionOfWeightsInSameUnit() {
+
+		Quantity<WeightUnit> kg1= new Quantity<>(10.0, WeightUnit.KILOGRAM);
+		Quantity<WeightUnit> kg2= new Quantity<>(3.0, WeightUnit.KILOGRAM);
+
+		Quantity<WeightUnit> result= kg1.subtract(kg2);
+
+		assertEquals(new Quantity<>(7.0, WeightUnit.KILOGRAM), result);
+	}
+
+	@Test
+	void testSubtractionOfWeightsWithDifferentUnits() {
+
+		Quantity<WeightUnit> kilogram= new Quantity<>(2.0, WeightUnit.KILOGRAM);
+		Quantity<WeightUnit> grams= new Quantity<>(500.0, WeightUnit.GRAM);
+
+		Quantity<WeightUnit> result= kilogram.subtract(grams);
+
+		assertEquals(new Quantity<>(1.5, WeightUnit.KILOGRAM), result);
+	}
+
+	@Test
+	void testSubtractionOfVolumesInSameUnit() {
+
+		Quantity<VolumeUnit> litre1= new Quantity<>(5.0, VolumeUnit.LITRE);
+		Quantity<VolumeUnit> litre2= new Quantity<>(2.0, VolumeUnit.LITRE);
+
+		Quantity<VolumeUnit> result= litre1.subtract(litre2);
+
+		assertEquals(new Quantity<>(3.0, VolumeUnit.LITRE), result);
+	}
+
+	@Test
+	void testSubtractionOfVolumesWithDifferentUnits() {
+
+		Quantity<VolumeUnit> litre= new Quantity<>(5.0, VolumeUnit.LITRE);
+		Quantity<VolumeUnit> millilitre= new Quantity<>(500.0, VolumeUnit.MILLILITRE);
+
+		Quantity<VolumeUnit> result= litre.subtract(millilitre);
+
+		assertEquals(new Quantity<>(4.5, VolumeUnit.LITRE), result);
+	}
+
+	@Test
+	void testSubtractionWithTargetUnit() {
+
+		Quantity<WeightUnit> kilogram= new Quantity<>(1.0, WeightUnit.KILOGRAM);
+		Quantity<WeightUnit> grams= new Quantity<>(250.0, WeightUnit.GRAM);
+
+		Quantity<WeightUnit> result= kilogram.subtract(grams, WeightUnit.GRAM);
+
+		assertEquals(new Quantity<>(750.0, WeightUnit.GRAM), result);
+	}
+
+
+	@Test
+	void testDivisionOfWeightsInSameUnit() {
+
+		Quantity<WeightUnit> kg1= new Quantity<>(10.0, WeightUnit.KILOGRAM);
+		Quantity<WeightUnit> kg2= new Quantity<>(5.0, WeightUnit.KILOGRAM);
+
+		double result= kg1.divide(kg2);
+
+		assertEquals(2.0, result, 0.0001);
+	}
+
+	@Test
+	void testDivisionOfWeightsWithDifferentUnits() {
+
+		Quantity<WeightUnit> kilogram= new Quantity<>(1.0, WeightUnit.KILOGRAM);
+		Quantity<WeightUnit> grams= new Quantity<>(500.0, WeightUnit.GRAM);
+
+		double result= kilogram.divide(grams);
+
+		assertEquals(2.0, result, 0.0001);
+	}
+
+	@Test
+	void testDivisionOfVolumesInSameUnit() {
+
+		Quantity<VolumeUnit> litre1= new Quantity<>(6.0, VolumeUnit.LITRE);
+		Quantity<VolumeUnit> litre2= new Quantity<>(2.0, VolumeUnit.LITRE);
+
+		double result= litre1.divide(litre2);
+
+		assertEquals(3.0, result, 0.0001);
+	}
+
+	@Test
+	void testDivisionOfVolumesWithDifferentUnits() {
+
+		Quantity<VolumeUnit> litre= new Quantity<>(1.0, VolumeUnit.LITRE);
+		Quantity<VolumeUnit> millilitre= new Quantity<>(500.0, VolumeUnit.MILLILITRE);
+
+		double result= litre.divide(millilitre);
+
+		assertEquals(2.0, result, 0.0001);
+	}
+
+	@Test
+	void testDivisionWithTargetUnit() {
+
+		Quantity<LengthUnit> feet= new Quantity<>(1.0, LengthUnit.FEET);
+		Quantity<LengthUnit> inches= new Quantity<>(6.0, LengthUnit.INCHES);
+
+		double result= feet.divide(inches);
+
+		assertEquals(2.0, result, 0.0001);
+	}
 }
