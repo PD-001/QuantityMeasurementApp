@@ -42,6 +42,12 @@ public class QuantityMeasurementApplication {
 
 		// Weight
 		demonstrateComparison(1.0, WeightUnit.KILOGRAM, 1000.0, WeightUnit.GRAM);
+		
+		// Volume
+		demonstrateComparison(1, VolumeUnit.LITRE, 1000, VolumeUnit.MILLILITRE);
+		demonstrateComparison(1, VolumeUnit.LITRE, 0.264172, VolumeUnit.GALLON);
+		
+		demonstrateConversion(new Quantity<>(1.0,VolumeUnit.GALLON), VolumeUnit.MILLILITRE);
 
 	}
 }
