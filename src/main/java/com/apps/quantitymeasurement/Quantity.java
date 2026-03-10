@@ -1,6 +1,5 @@
 package com.apps.quantitymeasurement;
 
-
 public class Quantity<U extends IMeasurable> {
 
 	private final double value;
@@ -43,7 +42,6 @@ public class Quantity<U extends IMeasurable> {
 		return new Quantity<>(converted, targetUnit);
 	}
 
-
 	public Quantity<U> add(Quantity<U> other, U targetUnit) {
 
 		if (other==null) throw new IllegalArgumentException("Other quantity cannot be null");
@@ -59,6 +57,43 @@ public class Quantity<U extends IMeasurable> {
 
 	public Quantity<U> add(Quantity<U> other) {
 		return add(other, this.unit);
+	}
+
+	public Quantity<U> subtract(Quantity<U> other, U targetUnit) {
+
+		if (other==null) throw new IllegalArgumentException("Other quantity cannot be null");
+
+		if (targetUnit==null) throw new IllegalArgumentException("Target unit cannot be null");
+
+		if (this.unit.getClass()!=other.unit.getClass())
+			throw new IllegalArgumentException("Cannot subtract quantities of different types");
+
+		double baseDifference= this.toBaseUnit()-other.toBaseUnit();
+
+		double converted= targetUnit.convertFromBaseUnit(baseDifference);
+
+		converted= Math.round(converted*100.0)/100.0;
+
+		return new Quantity<>(converted, targetUnit);
+	}
+
+	public Quantity<U> subtract(Quantity<U> other) {
+		return subtract(other, this.unit);
+	}
+
+	public double divide(Quantity<U> other) {
+
+		if (other==null) throw new IllegalArgumentException("Other quantity cannot be null");
+
+		if (this.unit.getClass()!=other.unit.getClass())
+			throw new IllegalArgumentException("Cannot divide quantities of different types");
+
+		double otherBase= other.toBaseUnit();
+
+		if (Math.abs(otherBase)<epsilon)
+			throw new ArithmeticException("Division by zero is not allowed");
+
+		return this.toBaseUnit()/otherBase;
 	}
 
 	@Override
