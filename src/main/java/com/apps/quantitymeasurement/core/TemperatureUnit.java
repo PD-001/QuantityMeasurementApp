@@ -1,16 +1,16 @@
-package com.apps.quantitymeasurement;
+package com.apps.quantitymeasurement.core;
 
 import java.util.function.Function;
 
 public enum TemperatureUnit implements IMeasurable {
 
-	CELSIUS(value -> value, baseValue -> baseValue),
-	FAHRENHEIT(value -> (value-32.0)*(5.0/9.0), baseValue -> (baseValue*(9.0/5.0))+32.0);
+	CELSIUS(value-> value, baseValue-> baseValue),
+	FAHRENHEIT(value-> (value-32.0)*(5.0/9.0), baseValue-> (baseValue*(9.0/5.0))+32.0);
 
 	private final Function<Double, Double> toCelsius;
 	private final Function<Double, Double> fromCelsius;
-
-	SupportsArithmetic supportsArithmetic= () -> false;
+	
+	SupportsArithmetic supportsArithmetic= ()-> false;
 
 	TemperatureUnit(Function<Double, Double> toCelsius, Function<Double, Double> fromCelsius) {
 		this.toCelsius= toCelsius;
@@ -38,6 +38,11 @@ public enum TemperatureUnit implements IMeasurable {
 	}
 
 	@Override
+	public String getMeasurementType() {
+		return "TEMPERATURE";
+	}
+
+	@Override
 	public boolean supportsArithmetic() {
 		return supportsArithmetic.isSupported();
 	}
@@ -45,7 +50,7 @@ public enum TemperatureUnit implements IMeasurable {
 	@Override
 	public void validateOperationSupport(String operation) {
 		throw new UnsupportedOperationException(
-			"Operation '"+ operation +"' is not supported."
+			"Operation "+ operation +" is not supported. Temperature measurements only support equality comparison and unit conversion."
 		);
 	}
 }
