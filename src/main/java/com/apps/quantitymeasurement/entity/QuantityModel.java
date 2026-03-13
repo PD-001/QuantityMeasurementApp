@@ -1,7 +1,7 @@
 package com.apps.quantitymeasurement.entity;
 
-import com.apps.quantitymeasurement.core.IMeasurable;
-import com.apps.quantitymeasurement.core.Quantity;
+import com.apps.quantitymeasurement.quantity.Quantity;
+import com.apps.quantitymeasurement.unit.IMeasurable;
 
 public class QuantityModel<U extends IMeasurable> {
 

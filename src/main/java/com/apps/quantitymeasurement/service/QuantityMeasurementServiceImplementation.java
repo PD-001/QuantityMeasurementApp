@@ -1,19 +1,24 @@
 package com.apps.quantitymeasurement.service;
 
-import com.apps.quantitymeasurement.core.IMeasurable;
-import com.apps.quantitymeasurement.core.Quantity;
 import com.apps.quantitymeasurement.entity.QuantityDTO;
 import com.apps.quantitymeasurement.entity.QuantityMeasurementEntity;
-import com.apps.quantitymeasurement.entity.QuantityMeasurementException;
 import com.apps.quantitymeasurement.entity.QuantityModel;
+import com.apps.quantitymeasurement.exception.QuantityMeasurementException;
+import com.apps.quantitymeasurement.quantity.Quantity;
 import com.apps.quantitymeasurement.repository.IQuantityMeasurementRepository;
+import com.apps.quantitymeasurement.unit.IMeasurable;
+
+import java.util.logging.Logger;
 
 public class QuantityMeasurementServiceImplementation implements IQuantityMeasurementService {
+
+	private static final Logger logger= Logger.getLogger(QuantityMeasurementServiceImplementation.class.getName());
 
 	private final IQuantityMeasurementRepository repository;
 
 	public QuantityMeasurementServiceImplementation(IQuantityMeasurementRepository repository) {
 		this.repository= repository;
+		logger.info("QuantityMeasurementServiceImplementation initialized");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -65,6 +70,8 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
 			boolean result= model1.toQuantity().equals(model2.toQuantity());
 
+			logger.info("COMPARE "+ q1 +" and "+ q2 +" = "+ result);
+
 			repository.save(new QuantityMeasurementEntity(
 				"COMPARE",
 				String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
@@ -92,6 +99,8 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
 			Quantity converted= model.toQuantity().convertTo(target);
 			QuantityDTO result= fromQuantity(converted);
+
+			logger.info("CONVERT "+ quantity +" to "+ targetUnit.getUnitName() +" = "+ result);
 
 			repository.save(new QuantityMeasurementEntity(
 				"CONVERT",
@@ -121,6 +130,8 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
 			Quantity result= model1.toQuantity().add(model2.toQuantity());
 			QuantityDTO dto= fromQuantity(result);
+
+			logger.info("ADD "+ q1 +" + "+ q2 +" = "+ dto);
 
 			repository.save(new QuantityMeasurementEntity(
 				"ADD",
@@ -152,6 +163,8 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 			Quantity result= model1.toQuantity().add(model2.toQuantity(), target);
 			QuantityDTO dto= fromQuantity(result);
 
+			logger.info("ADD "+ q1 +" + "+ q2 +" -> "+ targetUnit.getUnitName() +" = "+ dto);
+
 			repository.save(new QuantityMeasurementEntity(
 				"ADD",
 				String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
@@ -180,6 +193,8 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
 			Quantity result= model1.toQuantity().subtract(model2.toQuantity());
 			QuantityDTO dto= fromQuantity(result);
+
+			logger.info("SUBTRACT "+ q1 +" - "+ q2 +" = "+ dto);
 
 			repository.save(new QuantityMeasurementEntity(
 				"SUBTRACT",
@@ -211,6 +226,8 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 			Quantity result= model1.toQuantity().subtract(model2.toQuantity(), target);
 			QuantityDTO dto= fromQuantity(result);
 
+			logger.info("SUBTRACT "+ q1 +" - "+ q2 +" -> "+ targetUnit.getUnitName() +" = "+ dto);
+
 			repository.save(new QuantityMeasurementEntity(
 				"SUBTRACT",
 				String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
@@ -238,6 +255,8 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 			QuantityModel model2= toModel(q2);
 
 			double result= model1.toQuantity().divide(model2.toQuantity());
+
+			logger.info("DIVIDE "+ q1 +" / "+ q2 +" = "+ result);
 
 			repository.save(new QuantityMeasurementEntity(
 				"DIVIDE",

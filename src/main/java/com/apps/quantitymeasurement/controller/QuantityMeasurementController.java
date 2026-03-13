@@ -3,19 +3,24 @@ package com.apps.quantitymeasurement.controller;
 import com.apps.quantitymeasurement.entity.QuantityDTO;
 import com.apps.quantitymeasurement.service.IQuantityMeasurementService;
 
+import java.util.logging.Logger;
+
 public class QuantityMeasurementController {
+
+	private static final Logger logger= Logger.getLogger(QuantityMeasurementController.class.getName());
 
 	private final IQuantityMeasurementService service;
 
 	public QuantityMeasurementController(IQuantityMeasurementService service) {
 		this.service= service;
+		logger.info("QuantityMeasurementController initialized");
 	}
 
 	public boolean performComparison(QuantityDTO q1, QuantityDTO q2) {
 
 		boolean result= service.compare(q1, q2);
 
-		System.out.println("Comparing "+ q1 +" and "+ q2 +" : "+ result);
+		logger.info("Comparing "+ q1 +" and "+ q2 +" : "+ result);
 
 		return result;
 	}
@@ -24,7 +29,7 @@ public class QuantityMeasurementController {
 
 		QuantityDTO result= service.convert(quantity, targetUnit);
 
-		System.out.println("Converted: "+ result);
+		logger.info("Converted: "+ result);
 
 		return result;
 	}
@@ -33,7 +38,7 @@ public class QuantityMeasurementController {
 
 		QuantityDTO result= service.add(q1, q2);
 
-		System.out.println("Addition result: "+ result);
+		logger.info("Addition result: "+ result);
 
 		return result;
 	}
@@ -42,7 +47,7 @@ public class QuantityMeasurementController {
 
 		QuantityDTO result= service.add(q1, q2, targetUnit);
 
-		System.out.println("Addition result: "+ result);
+		logger.info("Addition result: "+ result);
 
 		return result;
 	}
@@ -51,7 +56,7 @@ public class QuantityMeasurementController {
 
 		QuantityDTO result= service.subtract(q1, q2);
 
-		System.out.println("Subtraction result: "+ result);
+		logger.info("Subtraction result: "+ result);
 
 		return result;
 	}
@@ -60,7 +65,7 @@ public class QuantityMeasurementController {
 
 		QuantityDTO result= service.subtract(q1, q2, targetUnit);
 
-		System.out.println("Subtraction result: "+ result);
+		logger.info("Subtraction result: "+ result);
 
 		return result;
 	}
@@ -69,7 +74,7 @@ public class QuantityMeasurementController {
 
 		double result= service.divide(q1, q2);
 
-		System.out.println("Division result: "+ result);
+		logger.info("Division result: "+ result);
 
 		return result;
 	}

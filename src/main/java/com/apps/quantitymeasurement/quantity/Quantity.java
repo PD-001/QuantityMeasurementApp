@@ -1,6 +1,9 @@
-package com.apps.quantitymeasurement.core;
+package com.apps.quantitymeasurement.quantity;
 
 import java.util.function.DoubleBinaryOperator;
+
+import com.apps.quantitymeasurement.unit.IMeasurable;
+import com.apps.quantitymeasurement.unit.TemperatureUnit;
 
 public class Quantity<U extends IMeasurable> {
 
