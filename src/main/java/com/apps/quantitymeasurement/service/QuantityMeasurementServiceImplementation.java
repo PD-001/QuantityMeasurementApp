@@ -41,9 +41,9 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 		String type= unit.getMeasurementType();
 
 		switch (type) {
-			case "LENGTH":      return QuantityDTO.LengthUnit.valueOf(name);
-			case "WEIGHT":      return QuantityDTO.WeightUnit.valueOf(name);
-			case "VOLUME":      return QuantityDTO.VolumeUnit.valueOf(name);
+			case "LENGTH": return QuantityDTO.LengthUnit.valueOf(name);
+			case "WEIGHT": return QuantityDTO.WeightUnit.valueOf(name);
+			case "VOLUME": return QuantityDTO.VolumeUnit.valueOf(name);
 			case "TEMPERATURE": return QuantityDTO.TemperatureUnit.valueOf(name);
 			default: throw new QuantityMeasurementException("Unknown measurement type: "+ type);
 		}
