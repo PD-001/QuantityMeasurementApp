@@ -1,81 +1,139 @@
 package com.apps.quantitymeasurement.controller;
 
-import com.apps.quantitymeasurement.entity.QuantityDTO;
+import com.apps.quantitymeasurement.model.QuantityDTO;
+import com.apps.quantitymeasurement.model.QuantityMeasurementEntity;
+import com.apps.quantitymeasurement.repository.IQuantityMeasurementRepository;
 import com.apps.quantitymeasurement.service.IQuantityMeasurementService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Logger;
+import java.util.List;
+import java.util.Map;
 
+@RestController
+@RequestMapping("/api/measurements")
 public class QuantityMeasurementController {
 
-	private static final Logger logger= Logger.getLogger(QuantityMeasurementController.class.getName());
+    private final IQuantityMeasurementService service;
+    private final IQuantityMeasurementRepository repository;
 
-	private final IQuantityMeasurementService service;
+    // Spring injects both automatically
+    public QuantityMeasurementController(IQuantityMeasurementService service,
+                                          IQuantityMeasurementRepository repository) {
+        this.service= service;
+        this.repository= repository;
+    }
 
-	public QuantityMeasurementController(IQuantityMeasurementService service) {
-		this.service= service;
-		logger.info("QuantityMeasurementController initialized");
-	}
+    // GET /api/measurements
+    @GetMapping
+    public ResponseEntity<List<QuantityMeasurementEntity>> getAll() {
+        return ResponseEntity.ok(repository.findAllByOrderByCreatedAtDesc());
+    }
 
-	public boolean performComparison(QuantityDTO q1, QuantityDTO q2) {
+    // GET /api/measurements/count
+    @GetMapping("/count")
+    public ResponseEntity<Map<String, Long>> getCount() {
+        return ResponseEntity.ok(Map.of("count", repository.count()));
+    }
 
-		boolean result= service.compare(q1, q2);
+    // DELETE /api/measurements
+    @DeleteMapping
+    public ResponseEntity<Map<String, String>> deleteAll() {
+        repository.deleteAll();
+        return ResponseEntity.ok(Map.of("message", "All measurements deleted"));
+    }
 
-		logger.info("Comparing "+ q1 +" and "+ q2 +" : "+ result);
+    // POST /api/measurements/compare
+    // Body: { "q1": {"value":1.0,"unit":"FEET"}, "q2": {"value":12.0,"unit":"INCHES"} }
+    @PostMapping("/compare")
+    public ResponseEntity<Map<String, Object>> compare(@RequestBody TwoQuantityRequest req) {
+        boolean result= service.compare(req.getQ1(), req.getQ2());
+        return ResponseEntity.ok(Map.of(
+            "operation", "COMPARE",
+            "q1", req.getQ1().toString(),
+            "q2", req.getQ2().toString(),
+            "result", result
+        ));
+    }
 
-		return result;
-	}
+    // POST /api/measurements/convert
+    // Body: { "quantity": {"value":1.0,"unit":"FEET"}, "targetUnit": "INCHES" }
+    @PostMapping("/convert")
+    public ResponseEntity<Map<String, Object>> convert(@RequestBody ConversionRequest req) {
+        QuantityDTO result= service.convert(req.getQuantity(), req.resolveTargetUnit());
+        return ResponseEntity.ok(Map.of(
+            "operation", "CONVERT",
+            "input", req.getQuantity().toString(),
+            "targetUnit", req.getTargetUnit(),
+            "result", result.toString()
+        ));
+    }
 
-	public QuantityDTO performConversion(QuantityDTO quantity, QuantityDTO.IMeasurableUnit targetUnit) {
+    // POST /api/measurements/add
+    @PostMapping("/add")
+    public ResponseEntity<Map<String, Object>> add(@RequestBody TwoQuantityRequest req) {
+        QuantityDTO result= service.add(req.getQ1(), req.getQ2());
+        return ResponseEntity.ok(Map.of(
+            "operation", "ADD",
+            "q1", req.getQ1().toString(),
+            "q2", req.getQ2().toString(),
+            "result", result.toString()
+        ));
+    }
 
-		QuantityDTO result= service.convert(quantity, targetUnit);
+    // POST /api/measurements/subtract
+    @PostMapping("/subtract")
+    public ResponseEntity<Map<String, Object>> subtract(@RequestBody TwoQuantityRequest req) {
+        QuantityDTO result= service.subtract(req.getQ1(), req.getQ2());
+        return ResponseEntity.ok(Map.of(
+            "operation", "SUBTRACT",
+            "q1", req.getQ1().toString(),
+            "q2", req.getQ2().toString(),
+            "result", result.toString()
+        ));
+    }
 
-		logger.info("Converted: "+ result);
+    // POST /api/measurements/divide
+    @PostMapping("/divide")
+    public ResponseEntity<Map<String, Object>> divide(@RequestBody TwoQuantityRequest req) {
+        double result= service.divide(req.getQ1(), req.getQ2());
+        return ResponseEntity.ok(Map.of(
+            "operation", "DIVIDE",
+            "q1", req.getQ1().toString(),
+            "q2", req.getQ2().toString(),
+            "result", result
+        ));
+    }
 
-		return result;
-	}
+    // Inner request classes (Jackson will deserialize JSON into these)
 
-	public QuantityDTO performAddition(QuantityDTO q1, QuantityDTO q2) {
+    public static class TwoQuantityRequest {
+        private QuantityDTO q1;
+        private QuantityDTO q2;
+        public QuantityDTO getQ1() { return q1; }
+        public QuantityDTO getQ2() { return q2; }
+        public void setQ1(QuantityDTO q1) { this.q1= q1; }
+        public void setQ2(QuantityDTO q2) { this.q2= q2; }
+    }
 
-		QuantityDTO result= service.add(q1, q2);
+    public static class ConversionRequest {
+        private QuantityDTO quantity;
+        private String targetUnit;
 
-		logger.info("Addition result: "+ result);
+        public QuantityDTO getQuantity() { return quantity; }
+        public String getTargetUnit()    { return targetUnit; }
+        public void setQuantity(QuantityDTO quantity) { this.quantity = quantity; }
+        public void setTargetUnit(String targetUnit)  { this.targetUnit = targetUnit; }
 
-		return result;
-	}
-
-	public QuantityDTO performAddition(QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit) {
-
-		QuantityDTO result= service.add(q1, q2, targetUnit);
-
-		logger.info("Addition result: "+ result);
-
-		return result;
-	}
-
-	public QuantityDTO performSubtraction(QuantityDTO q1, QuantityDTO q2) {
-
-		QuantityDTO result= service.subtract(q1, q2);
-
-		logger.info("Subtraction result: "+ result);
-
-		return result;
-	}
-
-	public QuantityDTO performSubtraction(QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit) {
-
-		QuantityDTO result= service.subtract(q1, q2, targetUnit);
-
-		logger.info("Subtraction result: "+ result);
-
-		return result;
-	}
-
-	public double performDivision(QuantityDTO q1, QuantityDTO q2) {
-
-		double result= service.divide(q1, q2);
-
-		logger.info("Division result: "+ result);
-
-		return result;
-	}
+        public QuantityDTO.IMeasurableUnit resolveTargetUnit() {
+            String type= quantity.getUnit().getMeasurementType();
+            switch (type) {
+                case "LENGTH": return QuantityDTO.LengthUnit.valueOf(targetUnit);
+                case "WEIGHT": return QuantityDTO.WeightUnit.valueOf(targetUnit);
+                case "VOLUME": return QuantityDTO.VolumeUnit.valueOf(targetUnit);
+                case "TEMPERATURE": return QuantityDTO.TemperatureUnit.valueOf(targetUnit);
+                default: throw new RuntimeException("Unknown measurement type: " + type);
+            }
+        }
+    }
 }

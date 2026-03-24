@@ -1,26 +1,24 @@
 package com.apps.quantitymeasurement.repository;
 
-import com.apps.quantitymeasurement.entity.QuantityMeasurementEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.apps.quantitymeasurement.model.QuantityMeasurementEntity;
 
 import java.util.List;
 
-public interface IQuantityMeasurementRepository {
+@Repository
+public interface IQuantityMeasurementRepository
+        extends JpaRepository<QuantityMeasurementEntity, Long> {
 
-	void save(QuantityMeasurementEntity entity);
+    // Spring Data generates the SQL for these automatically from the method name:
 
-	List<QuantityMeasurementEntity> getAllMeasurements();
+    List<QuantityMeasurementEntity> findAllByOrderByCreatedAtDesc();
 
-	List<QuantityMeasurementEntity> getMeasurementsByOperationType(String operationType);
+    List<QuantityMeasurementEntity> findByOperationTypeIgnoreCaseOrderByCreatedAtDesc(
+            String operationType);
 
-	List<QuantityMeasurementEntity> getMeasurementsByMeasurementType(String measurementType);
+    List<QuantityMeasurementEntity> findByOperand1UnitIgnoreCaseOrderByCreatedAtDesc(
+            String measurementUnit);
 
-	int getTotalCount();
-
-	void deleteAllMeasurements();
-
-	default String getPoolStatistics() {
-		return "Pool statistics not available for this repository";
-	}
-
-	default void releaseResources() {}
 }
