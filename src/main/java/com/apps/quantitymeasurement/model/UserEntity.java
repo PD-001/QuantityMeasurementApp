@@ -11,7 +11,7 @@ public class UserEntity {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name= "google_id", nullable= false, unique= true)
+    @Column(name= "google_id", unique= true)
     private String googleId;
 
     @Column(name= "email", nullable= false, unique= true)
@@ -22,6 +22,12 @@ public class UserEntity {
 
     @Column(name= "picture")
     private String picture;
+    
+    @Column(name= "password_hash")
+    private String passwordHash;
+
+    @Column(name= "provider", nullable= false)
+    private String provider;
 
     @Column(name= "created_at", nullable= false, updatable= false)
     private LocalDateTime createdAt;
@@ -33,6 +39,14 @@ public class UserEntity {
         this.email= email;
         this.name= name;
         this.picture= picture;
+        this.provider= "google";
+    }
+    
+    public UserEntity(String email, String name, String passwordHash) {
+        this.email= email;
+        this.name= name;
+        this.passwordHash= passwordHash;
+        this.provider= "local";
     }
 
     @PrePersist
@@ -45,6 +59,8 @@ public class UserEntity {
     public String getEmail() { return email; }
     public String getName(){ return name; }
     public String getPicture(){ return picture; }
+    public String getPasswordHash() { return passwordHash; }
+    public String getProvider() { return provider; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public void setName(String name){ this.name= name; }

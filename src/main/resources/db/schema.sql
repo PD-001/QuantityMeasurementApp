@@ -15,9 +15,11 @@ CREATE TABLE IF NOT EXISTS quantity_measurements (
 
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    google_id VARCHAR(255) NOT NULL UNIQUE,
+    google_id VARCHAR(255) UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255),
     picture VARCHAR(500),
+    password_hash VARCHAR(255),
+    provider VARCHAR(50) NOT NULL DEFAULT 'google',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
