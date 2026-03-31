@@ -4,17 +4,17 @@ import com.apps.quantitymeasurement.model.QuantityDTO;
 
 public interface IQuantityMeasurementService {
 
-	boolean compare(QuantityDTO q1, QuantityDTO q2);
+	boolean compare(Long userId, QuantityDTO q1, QuantityDTO q2);
 
-	QuantityDTO convert(QuantityDTO quantity, QuantityDTO.IMeasurableUnit targetUnit);
+	QuantityDTO convert(Long userId, QuantityDTO quantity, QuantityDTO.IMeasurableUnit targetUnit);
 
-	QuantityDTO add(QuantityDTO q1, QuantityDTO q2);
+	QuantityDTO add(Long userId, QuantityDTO q1, QuantityDTO q2);
 
-	QuantityDTO add(QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit);
+	QuantityDTO add(Long userId, QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit);
 
-	QuantityDTO subtract(QuantityDTO q1, QuantityDTO q2);
+	QuantityDTO subtract(Long userId, QuantityDTO q1, QuantityDTO q2);
 
-	QuantityDTO subtract(QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit);
+	QuantityDTO subtract(Long userId, QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit);
 
-	double divide(QuantityDTO q1, QuantityDTO q2);
+	double divide(Long userId, QuantityDTO q1, QuantityDTO q2);
 }

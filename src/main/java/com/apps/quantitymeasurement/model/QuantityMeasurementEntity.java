@@ -43,6 +43,9 @@ public class QuantityMeasurementEntity implements Serializable {
 
     @Column(name= "created_at", nullable= false, updatable= false)
     private LocalDateTime createdAt;
+    
+    @Column(name = "user_id")
+    private Long userId;
 
     //Required by JPA
     protected QuantityMeasurementEntity() {}
@@ -53,8 +56,9 @@ public class QuantityMeasurementEntity implements Serializable {
         this.createdAt= LocalDateTime.now();
     }
 
-    public QuantityMeasurementEntity(String operationType, String operand1Value, String operand1Unit, String resultValue, String resultUnit) {
-        this.operationType= operationType;
+    public QuantityMeasurementEntity(Long userId, String operationType, String operand1Value, String operand1Unit, String resultValue, String resultUnit) {
+        this.userId= userId;
+    	this.operationType= operationType;
         this.operand1Value= operand1Value;
         this.operand1Unit= operand1Unit;
         this.resultValue= resultValue;
@@ -62,8 +66,9 @@ public class QuantityMeasurementEntity implements Serializable {
         this.success= true;
     }
 
-    public QuantityMeasurementEntity(String operationType, String operand1Value, String operand1Unit, String operand2Value, String operand2Unit, String resultValue, String resultUnit) {
-        this.operationType= operationType;
+    public QuantityMeasurementEntity(Long userId, String operationType, String operand1Value, String operand1Unit, String operand2Value, String operand2Unit, String resultValue, String resultUnit) {
+        this.userId= userId;
+    	this.operationType= operationType;
         this.operand1Value= operand1Value;
         this.operand1Unit= operand1Unit;
         this.operand2Value= operand2Value;
@@ -73,8 +78,9 @@ public class QuantityMeasurementEntity implements Serializable {
         this.success= true;
     }
 
-    public QuantityMeasurementEntity(String operationType, String operand1Value, String operand1Unit, String errorMessage) {
-        this.operationType= operationType;
+    public QuantityMeasurementEntity(Long userId, String operationType, String operand1Value, String operand1Unit, String errorMessage) {
+        this.userId= userId;
+    	this.operationType= operationType;
         this.operand1Value= operand1Value;
         this.operand1Unit= operand1Unit;
         this.success= false;
@@ -82,7 +88,8 @@ public class QuantityMeasurementEntity implements Serializable {
     }
 
     // Getters
-
+    
+    public Long getUserId(){ return userId; }
     public Long getId(){ return id; }
     public String getOperationType(){ return operationType; }
     public String getOperand1Value(){ return operand1Value; }

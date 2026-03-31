@@ -57,13 +57,14 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean compare(QuantityDTO q1, QuantityDTO q2) {
+    public boolean compare(Long userId, QuantityDTO q1, QuantityDTO q2) {
         try {
             validateSameCategory(q1, q2);
             QuantityModel model1= toModel(q1);
             QuantityModel model2= toModel(q2);
             boolean result= model1.toQuantity().equals(model2.toQuantity());
             repository.save(new QuantityMeasurementEntity(
+            	userId,
                 "COMPARE",
                 String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
                 String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
@@ -72,7 +73,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             return result;
         } catch (QuantityMeasurementException e) {
             repository.save(new QuantityMeasurementEntity(
-                "COMPARE", String.valueOf(q1.getValue()), q1.getUnit().getUnitName(), e.getMessage()
+                userId, "COMPARE", String.valueOf(q1.getValue()), q1.getUnit().getUnitName(), e.getMessage()
             ));
             throw e;
         }
@@ -80,13 +81,14 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
     @Override
     @SuppressWarnings("unchecked")
-    public QuantityDTO convert(QuantityDTO quantity, QuantityDTO.IMeasurableUnit targetUnit) {
+    public QuantityDTO convert(Long userId, QuantityDTO quantity, QuantityDTO.IMeasurableUnit targetUnit) {
         try {
             QuantityModel model= toModel(quantity);
             IMeasurable target= IMeasurable.getUnitByName(targetUnit.getUnitName());
             Quantity converted= model.toQuantity().convertTo(target);
             QuantityDTO result= fromQuantity(converted);
             repository.save(new QuantityMeasurementEntity(
+            	userId,
                 "CONVERT",
                 String.valueOf(quantity.getValue()), quantity.getUnit().getUnitName(),
                 String.valueOf(result.getValue()), result.getUnit().getUnitName()
@@ -94,7 +96,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             return result;
         } catch (Exception e) {
             repository.save(new QuantityMeasurementEntity(
-                "CONVERT", String.valueOf(quantity.getValue()), quantity.getUnit().getUnitName(), e.getMessage()
+                userId, "CONVERT", String.valueOf(quantity.getValue()), quantity.getUnit().getUnitName(), e.getMessage()
             ));
             throw new QuantityMeasurementException("Conversion failed: " + e.getMessage(), e);
         }
@@ -102,7 +104,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
     @Override
     @SuppressWarnings("unchecked")
-    public QuantityDTO add(QuantityDTO q1, QuantityDTO q2) {
+    public QuantityDTO add(Long userId, QuantityDTO q1, QuantityDTO q2) {
         try {
             validateSameCategory(q1, q2);
             QuantityModel model1= toModel(q1);
@@ -110,6 +112,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             Quantity result= model1.toQuantity().add(model2.toQuantity());
             QuantityDTO dto= fromQuantity(result);
             repository.save(new QuantityMeasurementEntity(
+            	userId,
                 "ADD",
                 String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
                 String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
@@ -122,7 +125,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
     @Override
     @SuppressWarnings("unchecked")
-    public QuantityDTO add(QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit) {
+    public QuantityDTO add(Long userId, QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit) {
         try {
             validateSameCategory(q1, q2);
             QuantityModel model1= toModel(q1);
@@ -131,6 +134,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             Quantity result= model1.toQuantity().add(model2.toQuantity(), target);
             QuantityDTO dto= fromQuantity(result);
             repository.save(new QuantityMeasurementEntity(
+            	userId,
                 "ADD",
                 String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
                 String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
@@ -143,7 +147,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
     @Override
     @SuppressWarnings("unchecked")
-    public QuantityDTO subtract(QuantityDTO q1, QuantityDTO q2) {
+    public QuantityDTO subtract(Long userId, QuantityDTO q1, QuantityDTO q2) {
         try {
             validateSameCategory(q1, q2);
             QuantityModel model1= toModel(q1);
@@ -151,6 +155,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             Quantity result= model1.toQuantity().subtract(model2.toQuantity());
             QuantityDTO dto= fromQuantity(result);
             repository.save(new QuantityMeasurementEntity(
+            	userId,
                 "SUBTRACT",
                 String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
                 String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
@@ -163,7 +168,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
     @Override
     @SuppressWarnings("unchecked")
-    public QuantityDTO subtract(QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit) {
+    public QuantityDTO subtract(Long userId, QuantityDTO q1, QuantityDTO q2, QuantityDTO.IMeasurableUnit targetUnit) {
         try {
             validateSameCategory(q1, q2);
             QuantityModel model1= toModel(q1);
@@ -172,6 +177,7 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             Quantity result= model1.toQuantity().subtract(model2.toQuantity(), target);
             QuantityDTO dto= fromQuantity(result);
             repository.save(new QuantityMeasurementEntity(
+            	userId,
                 "SUBTRACT",
                 String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
                 String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
@@ -184,13 +190,14 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
 
     @Override
     @SuppressWarnings("unchecked")
-    public double divide(QuantityDTO q1, QuantityDTO q2) {
+    public double divide(Long userId, QuantityDTO q1, QuantityDTO q2) {
         try {
             validateSameCategory(q1, q2);
             QuantityModel model1= toModel(q1);
             QuantityModel model2= toModel(q2);
             double result= model1.toQuantity().divide(model2.toQuantity());
             repository.save(new QuantityMeasurementEntity(
+            	userId,
                 "DIVIDE",
                 String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
                 String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),

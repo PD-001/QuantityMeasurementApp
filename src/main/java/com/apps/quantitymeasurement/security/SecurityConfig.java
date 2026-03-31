@@ -1,5 +1,7 @@
 package com.apps.quantitymeasurement.security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -53,6 +55,14 @@ public class SecurityConfig {
             )
             .headers(headers ->
                 headers.frameOptions(frame -> frame.disable()))
+            .cors(cors -> cors.configurationSource(request -> {
+                var config = new org.springframework.web.cors.CorsConfiguration();
+                config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:5500"));
+                config.setAllowedMethods(List.of("GET","POST","DELETE","OPTIONS"));
+                config.setAllowedHeaders(List.of("*"));
+                config.setAllowCredentials(true);
+                return config;
+            }))
             .addFilterBefore(jwtAuthenticationFilter,
                              UsernamePasswordAuthenticationFilter.class);
         return http.build();

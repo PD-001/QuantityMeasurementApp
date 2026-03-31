@@ -55,13 +55,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(
-            "{\n" +
-            "  \"token\": \"" + jwt + "\",\n" +
-            "  \"email\": \"" + email + "\",\n" +
-            "  \"name\": \"" + name + "\",\n" +
-            "  \"message\": \"Login successful! Copy the token and use it in Postman.\"\n" +
-            "}"
-        );
+        String redirectUrl = "http://127.0.0.1:5500/index.html?token=" + jwt;
+        response.sendRedirect(redirectUrl);
     }
 }

@@ -11,8 +11,6 @@ import java.util.List;
 public interface IQuantityMeasurementRepository
         extends JpaRepository<QuantityMeasurementEntity, Long> {
 
-    // Spring Data generates the SQL for these automatically from the method name:
-
     List<QuantityMeasurementEntity> findAllByOrderByCreatedAtDesc();
 
     List<QuantityMeasurementEntity> findByOperationTypeIgnoreCaseOrderByCreatedAtDesc(
@@ -20,5 +18,14 @@ public interface IQuantityMeasurementRepository
 
     List<QuantityMeasurementEntity> findByOperand1UnitIgnoreCaseOrderByCreatedAtDesc(
             String measurementUnit);
+    
+    List<QuantityMeasurementEntity> findByUserIdOrderByCreatedAtDesc(Long userId);
+
+    List<QuantityMeasurementEntity> findByUserIdAndOperationTypeIgnoreCaseOrderByCreatedAtDesc(
+            Long userId, String operationType);
+
+    void deleteByUserId(Long userId);
+
+    long countByUserId(Long userId);
 
 }

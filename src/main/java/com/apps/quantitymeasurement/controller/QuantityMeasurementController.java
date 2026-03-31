@@ -3,7 +3,12 @@ package com.apps.quantitymeasurement.controller;
 import com.apps.quantitymeasurement.model.QuantityDTO;
 import com.apps.quantitymeasurement.model.QuantityMeasurementEntity;
 import com.apps.quantitymeasurement.repository.IQuantityMeasurementRepository;
+import com.apps.quantitymeasurement.repository.UserRepository;
+import com.apps.quantitymeasurement.security.JwtTokenProvider;
 import com.apps.quantitymeasurement.service.IQuantityMeasurementService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,38 +21,59 @@ public class QuantityMeasurementController {
 
     private final IQuantityMeasurementService service;
     private final IQuantityMeasurementRepository repository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
     // Spring injects both automatically
     public QuantityMeasurementController(IQuantityMeasurementService service,
-                                          IQuantityMeasurementRepository repository) {
+                                          IQuantityMeasurementRepository repository,
+                                          JwtTokenProvider jwtTokenProvider,
+                                          UserRepository userRepository) {
         this.service= service;
         this.repository= repository;
+        this.jwtTokenProvider= jwtTokenProvider;
+		this.userRepository = userRepository;
+    }
+    
+    private Long getCurrentUserId(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+            return jwtTokenProvider.getUserIdFromToken(token);
+        }
+        throw new RuntimeException("No valid token found");
     }
 
     // GET /api/measurements
     @GetMapping
-    public ResponseEntity<List<QuantityMeasurementEntity>> getAll() {
-        return ResponseEntity.ok(repository.findAllByOrderByCreatedAtDesc());
+    public ResponseEntity<List<QuantityMeasurementEntity>> getAll(HttpServletRequest request) {
+    	Long userId = getCurrentUserId(request);
+        return ResponseEntity.ok(
+            repository.findByUserIdOrderByCreatedAtDesc(userId)
+        );
     }
 
     // GET /api/measurements/count
     @GetMapping("/count")
-    public ResponseEntity<Map<String, Long>> getCount() {
-        return ResponseEntity.ok(Map.of("count", repository.count()));
+    public ResponseEntity<Map<String, Long>> getCount(HttpServletRequest request) {
+    	Long userId = getCurrentUserId(request);
+        return ResponseEntity.ok(Map.of("count", repository.countByUserId(userId)));
     }
 
     // DELETE /api/measurements
     @DeleteMapping
-    public ResponseEntity<Map<String, String>> deleteAll() {
-        repository.deleteAll();
-        return ResponseEntity.ok(Map.of("message", "All measurements deleted"));
+    public ResponseEntity<Map<String, String>> deleteAll(HttpServletRequest request) {
+    	Long userId = getCurrentUserId(request);
+        repository.deleteByUserId(userId);
+        return ResponseEntity.ok(Map.of("message", "Your measurements deleted"));
     }
 
     // POST /api/measurements/compare
     // Body: { "q1": {"value":1.0,"unit":"FEET"}, "q2": {"value":12.0,"unit":"INCHES"} }
     @PostMapping("/compare")
-    public ResponseEntity<Map<String, Object>> compare(@RequestBody TwoQuantityRequest req) {
-        boolean result= service.compare(req.getQ1(), req.getQ2());
+    public ResponseEntity<Map<String, Object>> compare(@RequestBody TwoQuantityRequest req, HttpServletRequest request) {
+    	Long userId = getCurrentUserId(request);
+    	boolean result= service.compare(userId, req.getQ1(), req.getQ2());
         return ResponseEntity.ok(Map.of(
             "operation", "COMPARE",
             "q1", req.getQ1().toString(),
@@ -59,8 +85,9 @@ public class QuantityMeasurementController {
     // POST /api/measurements/convert
     // Body: { "quantity": {"value":1.0,"unit":"FEET"}, "targetUnit": "INCHES" }
     @PostMapping("/convert")
-    public ResponseEntity<Map<String, Object>> convert(@RequestBody ConversionRequest req) {
-        QuantityDTO result= service.convert(req.getQuantity(), req.resolveTargetUnit());
+    public ResponseEntity<Map<String, Object>> convert(@RequestBody ConversionRequest req, HttpServletRequest request) {
+        Long userId= getCurrentUserId(request);
+    	QuantityDTO result= service.convert(userId, req.getQuantity(), req.resolveTargetUnit());
         return ResponseEntity.ok(Map.of(
             "operation", "CONVERT",
             "input", req.getQuantity().toString(),
@@ -71,8 +98,9 @@ public class QuantityMeasurementController {
 
     // POST /api/measurements/add
     @PostMapping("/add")
-    public ResponseEntity<Map<String, Object>> add(@RequestBody TwoQuantityRequest req) {
-        QuantityDTO result= service.add(req.getQ1(), req.getQ2());
+    public ResponseEntity<Map<String, Object>> add(@RequestBody TwoQuantityRequest req, HttpServletRequest request) {
+    	Long userId = getCurrentUserId(request);
+    	QuantityDTO result= service.add(userId, req.getQ1(), req.getQ2());
         return ResponseEntity.ok(Map.of(
             "operation", "ADD",
             "q1", req.getQ1().toString(),
@@ -83,8 +111,9 @@ public class QuantityMeasurementController {
 
     // POST /api/measurements/subtract
     @PostMapping("/subtract")
-    public ResponseEntity<Map<String, Object>> subtract(@RequestBody TwoQuantityRequest req) {
-        QuantityDTO result= service.subtract(req.getQ1(), req.getQ2());
+    public ResponseEntity<Map<String, Object>> subtract(@RequestBody TwoQuantityRequest req, HttpServletRequest request) {
+    	Long userId = getCurrentUserId(request);
+    	QuantityDTO result= service.subtract(userId, req.getQ1(), req.getQ2());
         return ResponseEntity.ok(Map.of(
             "operation", "SUBTRACT",
             "q1", req.getQ1().toString(),
@@ -95,8 +124,9 @@ public class QuantityMeasurementController {
 
     // POST /api/measurements/divide
     @PostMapping("/divide")
-    public ResponseEntity<Map<String, Object>> divide(@RequestBody TwoQuantityRequest req) {
-        double result= service.divide(req.getQ1(), req.getQ2());
+    public ResponseEntity<Map<String, Object>> divide(@RequestBody TwoQuantityRequest req, HttpServletRequest request) {
+    	Long userId = getCurrentUserId(request);
+    	double result= service.divide(userId, req.getQ1(), req.getQ2());
         return ResponseEntity.ok(Map.of(
             "operation", "DIVIDE",
             "q1", req.getQ1().toString(),
@@ -105,7 +135,7 @@ public class QuantityMeasurementController {
         ));
     }
 
-    // Inner request classes (Jackson will deserialize JSON into these)
+    // Inner request classes
 
     public static class TwoQuantityRequest {
         private QuantityDTO q1;
