@@ -15,6 +15,7 @@
 
     <groupId>com.apps</groupId>
     <artifactId>quantitymeasurement</artifactId>
+    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>quantitymeasurement</name>
 
