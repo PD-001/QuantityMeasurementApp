@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,6 +18,9 @@ import java.util.logging.Logger;
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private static final Logger logger= Logger.getLogger(OAuth2SuccessHandler.class.getName());
+
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
@@ -55,7 +59,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        String redirectUrl = "http://127.0.0.1:5500/index.html?token=" + jwt;
+        String redirectUrl = frontendUrl + "/index.html?token=" + jwt;
         response.sendRedirect(redirectUrl);
     }
 }

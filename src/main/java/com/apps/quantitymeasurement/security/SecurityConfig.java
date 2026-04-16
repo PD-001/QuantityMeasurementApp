@@ -72,7 +72,7 @@ public class SecurityConfig {
 //                headers.frameOptions(frame -> frame.disable()))
             .cors(cors -> cors.configurationSource(request -> {
                 var config = new org.springframework.web.cors.CorsConfiguration();
-                config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:5500", "http://localhost:4200"));
+                config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:5500", "http://localhost:4200", "https://69e0c4dac4a3167ef5297772--quantitymeasurementapp-prakash.netlify.app/"));
                 config.setAllowedMethods(List.of("GET","POST","DELETE","OPTIONS"));
                 config.setAllowedHeaders(List.of("*"));
                 config.setAllowCredentials(true);
