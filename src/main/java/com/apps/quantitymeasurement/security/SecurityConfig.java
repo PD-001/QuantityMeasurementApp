@@ -53,18 +53,26 @@ public class SecurityConfig {
                     "/auth/**",
                     "/login/**",
                     "/oauth2/**",
-                    "/h2-console/**"
+//                    "/h2-console/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**",
+                    "/api/measurements/compare",
+                    "/api/measurements/convert",
+                    "/api/measurements/add",
+                    "/api/measurements/subtract",
+                    "/api/measurements/divide"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
                 .successHandler(oauth2SuccessHandler)
             )
-            .headers(headers ->
-                headers.frameOptions(frame -> frame.disable()))
+//            .headers(headers ->
+//                headers.frameOptions(frame -> frame.disable()))
             .cors(cors -> cors.configurationSource(request -> {
                 var config = new org.springframework.web.cors.CorsConfiguration();
-                config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:5500"));
+                config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:5500", "http://localhost:4200"));
                 config.setAllowedMethods(List.of("GET","POST","DELETE","OPTIONS"));
                 config.setAllowedHeaders(List.of("*"));
                 config.setAllowCredentials(true);

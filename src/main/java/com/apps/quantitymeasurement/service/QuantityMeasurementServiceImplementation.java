@@ -63,13 +63,17 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             QuantityModel model1= toModel(q1);
             QuantityModel model2= toModel(q2);
             boolean result= model1.toQuantity().equals(model2.toQuantity());
-            repository.save(new QuantityMeasurementEntity(
-            	userId,
-                "COMPARE",
-                String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
-                String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
-                String.valueOf(result), ""
-            ));
+            
+            if(userId!= null) {
+            	repository.save(new QuantityMeasurementEntity(
+            			userId,
+            			"COMPARE",
+            			String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
+            			String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
+            			String.valueOf(result), ""
+            	));            	
+            }
+            
             return result;
         } catch (QuantityMeasurementException e) {
             repository.save(new QuantityMeasurementEntity(
@@ -87,12 +91,16 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             IMeasurable target= IMeasurable.getUnitByName(targetUnit.getUnitName());
             Quantity converted= model.toQuantity().convertTo(target);
             QuantityDTO result= fromQuantity(converted);
-            repository.save(new QuantityMeasurementEntity(
-            	userId,
-                "CONVERT",
-                String.valueOf(quantity.getValue()), quantity.getUnit().getUnitName(),
-                String.valueOf(result.getValue()), result.getUnit().getUnitName()
-            ));
+            
+            if(userId!=null) {
+            	repository.save(new QuantityMeasurementEntity(
+            			userId,
+            			"CONVERT",
+            			String.valueOf(quantity.getValue()), quantity.getUnit().getUnitName(),
+            			String.valueOf(result.getValue()), result.getUnit().getUnitName()
+            	));
+            }
+            
             return result;
         } catch (Exception e) {
             repository.save(new QuantityMeasurementEntity(
@@ -111,13 +119,17 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             QuantityModel model2= toModel(q2);
             Quantity result= model1.toQuantity().add(model2.toQuantity());
             QuantityDTO dto= fromQuantity(result);
-            repository.save(new QuantityMeasurementEntity(
-            	userId,
-                "ADD",
-                String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
-                String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
-                String.valueOf(dto.getValue()), dto.getUnit().getUnitName()
-            ));
+            
+            if(userId!=null) {
+            	repository.save(new QuantityMeasurementEntity(
+            			userId,
+            			"ADD",
+            			String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
+            			String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
+            			String.valueOf(dto.getValue()), dto.getUnit().getUnitName()
+       			));
+            	
+            }
             return dto;
         } catch (QuantityMeasurementException e) { throw e;
         } catch (Exception e) { throw new QuantityMeasurementException("Addition failed: " + e.getMessage(), e); }
@@ -133,13 +145,16 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             IMeasurable target= IMeasurable.getUnitByName(targetUnit.getUnitName());
             Quantity result= model1.toQuantity().add(model2.toQuantity(), target);
             QuantityDTO dto= fromQuantity(result);
-            repository.save(new QuantityMeasurementEntity(
-            	userId,
-                "ADD",
-                String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
-                String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
-                String.valueOf(dto.getValue()), dto.getUnit().getUnitName()
-            ));
+            
+            if(userId!=null) {
+            	repository.save(new QuantityMeasurementEntity(
+            			userId,
+            			"ADD",
+            			String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
+            			String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
+            			String.valueOf(dto.getValue()), dto.getUnit().getUnitName()
+        		));            	
+            }
             return dto;
         } catch (QuantityMeasurementException e) { throw e;
         } catch (Exception e) { throw new QuantityMeasurementException("Addition failed: " + e.getMessage(), e); }
@@ -154,13 +169,17 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             QuantityModel model2= toModel(q2);
             Quantity result= model1.toQuantity().subtract(model2.toQuantity());
             QuantityDTO dto= fromQuantity(result);
-            repository.save(new QuantityMeasurementEntity(
-            	userId,
-                "SUBTRACT",
-                String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
-                String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
-                String.valueOf(dto.getValue()), dto.getUnit().getUnitName()
-            ));
+            
+            if(userId!=null) {
+            	repository.save(new QuantityMeasurementEntity(
+            			userId,
+            			"SUBTRACT",
+            			String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
+            			String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
+            			String.valueOf(dto.getValue()), dto.getUnit().getUnitName()
+           		));
+            }
+            
             return dto;
         } catch (QuantityMeasurementException e) { throw e;
         } catch (Exception e) { throw new QuantityMeasurementException("Subtraction failed: " + e.getMessage(), e); }
@@ -176,13 +195,17 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             IMeasurable target= IMeasurable.getUnitByName(targetUnit.getUnitName());
             Quantity result= model1.toQuantity().subtract(model2.toQuantity(), target);
             QuantityDTO dto= fromQuantity(result);
-            repository.save(new QuantityMeasurementEntity(
-            	userId,
-                "SUBTRACT",
-                String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
-                String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
-                String.valueOf(dto.getValue()), dto.getUnit().getUnitName()
-            ));
+            
+            if(userId!=null) {
+            	repository.save(new QuantityMeasurementEntity(
+            			userId,
+            			"SUBTRACT",
+            			String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
+            			String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
+            			String.valueOf(dto.getValue()), dto.getUnit().getUnitName()
+            	));
+            }
+            
             return dto;
         } catch (QuantityMeasurementException e) { throw e;
         } catch (Exception e) { throw new QuantityMeasurementException("Subtraction failed: " + e.getMessage(), e); }
@@ -196,13 +219,16 @@ public class QuantityMeasurementServiceImplementation implements IQuantityMeasur
             QuantityModel model1= toModel(q1);
             QuantityModel model2= toModel(q2);
             double result= model1.toQuantity().divide(model2.toQuantity());
-            repository.save(new QuantityMeasurementEntity(
-            	userId,
-                "DIVIDE",
-                String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
-                String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
-                String.valueOf(result), "scalar"
-            ));
+            
+            if(userId!=null) {
+            	repository.save(new QuantityMeasurementEntity(
+            			userId,
+            			"DIVIDE",
+            			String.valueOf(q1.getValue()), q1.getUnit().getUnitName(),
+            			String.valueOf(q2.getValue()), q2.getUnit().getUnitName(),
+            			String.valueOf(result), "scalar"
+            	));            	
+            }
             return result;
         } catch (QuantityMeasurementException e) { throw e;
         } catch (Exception e) { throw new QuantityMeasurementException("Division failed: " + e.getMessage(), e); }

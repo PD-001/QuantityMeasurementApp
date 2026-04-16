@@ -36,12 +36,16 @@ public class QuantityMeasurementController {
     }
     
     private Long getCurrentUserId(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
-            return jwtTokenProvider.getUserIdFromToken(token);
+        String header= request.getHeader("Authorization");
+        if (header!= null && header.startsWith("Bearer ")) {
+            try {
+                String token= header.substring(7);
+                return jwtTokenProvider.getUserIdFromToken(token);
+            } catch (Exception e) {
+                return null;
+            }
         }
-        throw new RuntimeException("No valid token found");
+        return null;
     }
 
     // GET /api/measurements
