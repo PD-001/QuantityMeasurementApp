@@ -236,4 +236,4 @@ Features include unit conversion, arithmetic operations, quantity comparison, an
 | Repo | Description |
 |---|---|
 | [`QuantityMeasurementApp`](https://github.com/PD-001/QuantityMeasurementApp) | This repo — Spring Boot REST API |
-| [`QuantityMeasurementApp-Frontend`](https://github.com/PD-001/QuantityMeasurementApp-Frontend) | Angular 17 frontend (separate repo) |
+| [`QuantityMeasurementApp-Frontend`](https://github.com/PD-001/QuantityMeasurementApp-Frontend) | Angular 21 frontend (separate repo) |
